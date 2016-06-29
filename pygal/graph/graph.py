@@ -48,6 +48,7 @@ class Graph(PublicApi):
         self._make_title()
         self._make_x_title()
         self._make_y_title()
+        self._make_secondary_y_title()
 
     def _axes(self):
         """Draw axes"""
@@ -450,6 +451,20 @@ class Graph(PublicApi):
                     -90, self._legend_at_left_width, yc)
                 text.text = title_line
 
+    def _make_secondary_y_title(self):
+        """Make the secondary Y-Axis title"""
+        if self._secondary_y_title:
+            yc = self.margin_box.top + self.view.height / 2
+            for i, title_line in enumerate(self._secondary_y_title, 1):
+                x = (self.margin_box.left + self.view.width +
+                     self.margin_box.right) - self.spacing
+                text = self.svg.node(
+                    self.nodes['title'], 'text', class_='title', x=x,
+                    y=i * (self.style.title_font_size + self.spacing) + yc
+                )
+                text.attrib['transform'] = "rotate(%d %f %f)" % (90, x, yc)
+                text.text = title_line
+
     def _interpolate(self, xs, ys):
         """Make the interpolation"""
         x = []
@@ -724,6 +739,18 @@ class Graph(PublicApi):
             height = len(self._y_title) * (self.spacing + h)
             self.margin_box.left += height
             self._y_title_height = height + self.spacing
+
+        self._secondary_y_title = split_title(
+            self.secondary_y_title, self.height - self.margin_box.y,
+            self.style.title_font_size)
+
+        self._secondary_y_title_height = 0
+        if self._secondary_y_title:
+            h, _ = get_text_box(self._secondary_y_title[0],
+                                self.style.title_font_size)
+            height = len(self._secondary_y_title) * (self.spacing + h)
+            self.margin_box.right += (self.spacing + height)
+            self._secondary_y_title_height = height + self.spacing
 
         # Inner margin
         if self.print_values_position == 'top':

@@ -270,6 +270,10 @@ class Config(CommonConfig):
         None, str, "Look",
         "Graph Y-Axis title.", "Leave it to None to disable Y-Axis title.")
 
+    secondary_y_title = Key(
+        None, str, "Look", "Graph secondary Y-Axis title.", "Leave it to None "
+        "to disable secondary Y-Axis title.")
+
     width = Key(
         800, int, "Look", "Graph width")
 
